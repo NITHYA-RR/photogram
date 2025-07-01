@@ -1,0 +1,28 @@
+<FilesMatch "\.(?i:gif|jpe?g|png|ico|css|js|swf)$">
+    Header set Cache-Control "max-age=172800, public, must-revalidate"
+</FilesMatch>
+
+ErrorDocument 404 /error.php
+ErrorDocument 500 "<h1>Some error, contact the administrator</h1>"
+
+RewriteEngine On
+RewriteBase / 
+
+# Rewrite /files/abc to files.php?name=abc
+RewriteRule ^/?files/([^/]+)?$ files.php?name=$1 [L,QSA,NC]
+
+# Rewrite /api/abc to api.php?request=abc
+RewriteRule ^/?api/([^/]+)?$ api.php?request=$1 [L,QSA,NC]
+
+# Rewrite /api/ns/abc to api.php?request=abc&namespace=ns
+RewriteRule ^/?api/([^/]+)/(.+)?$ api.php?request=$2&namespace=$1 [L,QSA,NC]
+
+# Rewrite any/deep/path to any/deep/path.php if file exists
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]
+
+
+
+

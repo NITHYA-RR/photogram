@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			// "type": "npm",
+			"type": "npm",
+			"script": "grunt",
+			"path": "project",
+			"problemMatcher": [],
+			"label": "Grunt",
+			"detail": "cd c:/Users/Nithya/htdocs/Automation/grunt && grunt"
+		}
+	]
+}
