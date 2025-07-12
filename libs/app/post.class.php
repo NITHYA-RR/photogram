@@ -1,5 +1,8 @@
 <?php
 include_once __DIR__ . "/../traits/SQlGetterSetterdata.trait.php";
+require_once __DIR__ . '/../includes/Database.class.php';
+
+
 
 class Post
 {
@@ -35,13 +38,21 @@ class Post
     public static function getAllPosts()
     {
         $db = Database::getConnection();
-        $query = "SELECT * FROM `post`  ORDER BY `created_at`";
+        $query = "SELECT * FROM `post`  ORDER BY `created_at` DESC";
         $result = $db->query($query);
         $posts = [];
         while ($row = $result->fetch_assoc()) {
             $posts[] = new Post($row['id']);
         }
         return $posts;
+    }
+
+    public static function countAllPosts()
+    {
+        $db = Database::getConnection();
+        $sql = "SELECT COUNT(*) as count FROM `post` ORDER BY `created_at` DESC";
+        $result = $db->query($sql);
+        return iterator_to_array($result);
     }
 
     public function __construct($id)

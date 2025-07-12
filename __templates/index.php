@@ -1,43 +1,15 @@
 <?php
-if (Session::isAuthenticated()) {
-  Session::load_templates('index/content');
-} else {
-  Session::load_templates('index/login');
+include_once __DIR__ . "/../libs/includes/Session.class.php";
+include_once __DIR__ . "/../libs/app/Post.class.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
 }
-
-$posts = Post::getAllPosts();
-?>
-
-
-<div class="album">
-  <div class="container">
-    <div class="row" id="masonry-area">
-      <?php foreach ($posts as $p): ?>
-        <?php $created_at = $p->getCreatedAt(); ?>
-        <div class="col-sm-6 col-lg-4 mb-4">
-          <div class="card shadow-sm">
-            <img src="<?php echo htmlspecialchars($p->getImageUrl()); ?>" class="bd-placeholder-img card-img-top" width="100%">
-            <div class="card-body">
-              <p class="card-text"><?php echo htmlspecialchars($p->getPostText()); ?></p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-primary">Like</button>
-                  <button type="button" class="btn btn-sm btn-outline-success">Share</button>
-                  <?php
-                  // $user = Session::getUser();
-                  // if(Session::isOwnerOf($p->getOwner())){
-                  ?>
-                  <button type="button" class="btn btn-sm btn-outline-danger">Delete</button>
-                  <?php
-                  // }
-                  ?>
-                </div>
-                <small class="text-muted"><?php echo htmlspecialchars($created_at); ?></small>
-              </div>
-            </div>
-          </div>
-        </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</div>
+// ✅ Then conditionally load content OR login section
+if (Session::isAuthenticated()) {
+  Session::load_templates('index/content'); // post form
+} else {
+  Session::load_templates('index/logins'); // login/register call-to-action
+}
+// ✅ Always load photos layout (shows posts)
+Session::load_templates('index/photos');

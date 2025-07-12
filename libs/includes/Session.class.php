@@ -11,6 +11,7 @@ class session
         session_unset();
     }
 
+
     public static function destroy()
     {
         session_destroy();
@@ -70,9 +71,25 @@ class session
     public static function isAuthenticated()
     {
         if (is_object(Session::getUserSession())) {
-            return Session::getUserSession()->isvalid();
+            $valid = Session::getUserSession()->isvalid();
+            error_log("User session valid: " . ($valid ? "yes" : "no"));
+            return $valid;
         }
-        return true;
+        error_log("No user session object found");
+        return false;
+    }
+    // public static function isAuthenticated()
+    // {
+    //     if (is_object(Session::getUserSession())) {
+    //         return Session::getUserSession()->isvalid();
+    //     }
+    //     return false; // Return false if no user session
+    // }
+
+
+    public static function setUserSession($userSession)
+    {
+        $_SESSION['user_session'] = $userSession;
     }
 
     public static function getUserSession()

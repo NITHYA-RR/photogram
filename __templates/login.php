@@ -9,16 +9,16 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// // Handle logout request
-// if (isset($_GET['logout'])) {
-//     // Destroy the session
-//     session_unset();
-//     session_destroy();
+// Handle logout request
+if (isset($_GET['logout'])) {
+    // Destroy the session
+    session_unset();
+    session_destroy();
 
-//     // Redirect to login.php with a logout message
-//     header("Location: login.php?message=logout");
-//     exit();
-// }
+    // Redirect to login.php with a logout message
+    header("Location: login.php?message=logout");
+    exit();
+}
 
 // If the user is already logged in, show "Welcome back"
 if (isset($_SESSION['is_loggedin']) && $_SESSION['is_loggedin'] === true) {
@@ -30,21 +30,25 @@ if (isset($_SESSION['is_loggedin']) && $_SESSION['is_loggedin'] === true) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
-
-    // Attempt login
-    if (User::login($username, $password)) {
-        // Store session data
+    $token = UserSession::authenticate($username, $password); // ✅ This does login & returns token
+    if ($token) {
         Session::set('is_loggedin', true);
         Session::set('session_username', $username);
+        Session::set('session_token', $token); // Optional - already done in authenticate
+
+        Session::setUserSession(new UserSession($token)); // ✅ This now works
+
         header("Location: index.php");
         exit();
-    } else {
+    }
+    // Attempt login
+    else {
 ?>
         <main class="container">
             <div style="background-color: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px; border: 1px solid #bee5eb;">
                 Please enter your username and password.
             </div>
-    </main>
+        </main>
     <?php
 
     }

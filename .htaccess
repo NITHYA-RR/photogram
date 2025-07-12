@@ -1,23 +1,25 @@
+RewriteEngine On
+RewriteBase /
+
+# Serve static files
 <FilesMatch "\.(?i:gif|jpe?g|png|ico|css|js|swf)$">
     Header set Cache-Control "max-age=172800, public, must-revalidate"
 </FilesMatch>
 
+# Error handlers
 ErrorDocument 404 /error.php
 ErrorDocument 500 "<h1>Some error, contact the administrator</h1>"
 
-RewriteEngine On
-RewriteBase / 
+# ✅ 1. Rewrite /api/namespace/func → api.php?request=func&namespace=namespace
+RewriteRule ^/?api/([^/]+)/([^/]+)?$ api.php?request=$2&namespace=$1 [L,QSA,NC]
 
-# Rewrite /files/abc to files.php?name=abc
-RewriteRule ^/?files/([^/]+)?$ files.php?name=$1 [L,QSA,NC]
-
-# Rewrite /api/abc to api.php?request=abc
+# ✅ 2. Rewrite /api/func → api.php?request=func
 RewriteRule ^/?api/([^/]+)?$ api.php?request=$1 [L,QSA,NC]
 
-# Rewrite /api/ns/abc to api.php?request=abc&namespace=ns
-RewriteRule ^/?api/([^/]+)/(.+)?$ api.php?request=$2&namespace=$1 [L,QSA,NC]
+# 3. Rewrite /files/abc → files.php?name=abc
+RewriteRule ^/?files/([^/]+)?$ files.php?name=$1 [L,QSA,NC]
 
-# Rewrite any/deep/path to any/deep/path.php if file exists
+# 4. Rewrite /path/to/file → /path/to/file.php (if file exists)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f

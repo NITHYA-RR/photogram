@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL ^ E_DEPRECATED);
 require_once 'REST.class.php';
+// require __DIR__ . 'libs/api/posts/delete.php';
 class API extends REST
 {
     public $data = "";
@@ -16,35 +17,181 @@ class API extends REST
     * This method dynmically call the method based on the query string
     *
     */
+
+
     public function processApi()
     {
-        $func = strtolower(trim($_REQUEST['rquest'] ?? ''));
+        $func = strtolower(trim($_REQUEST['request'] ?? ''));
+        $namespace = trim($_REQUEST['namespace'] ?? '', '/');
 
-        if (method_exists($this, $func)) {
+        // Check if method exists in class
+        if ((int)method_exists($this, $func) > 0) {
             $this->$func();
             return;
         }
 
-        if (isset($_GET['namespace'])) {
-            $namespace = trim($_GET['namespace'], '/');
-            $file = __DIR__ . "/libs/api/$func.php";
+        // Decide path based on presence of namespace
+        $basePath = dirname(__DIR__) . '/posts/';
+        $dir = $namespace ? $basePath . $namespace : $basePath;
+        $file = $dir . '/' . $func . '.php';
 
-            if (file_exists($file)) {
-                include $file;
+        if (file_exists($file)) {
+            include $file;
 
-                if (isset(${$func}) && is_callable(${$func})) {
-                    $this->current_call = Closure::bind(${$func}, $this, get_class($this));
-                    call_user_func($this->current_call);
-                } else {
-                    $this->response($this->json(['error' => 'function_not_found']), 500);
-                }
+            // Use filename as function name
+            $func = basename($file, '.php');
+
+            if (isset(${$func}) && is_callable(${$func})) {
+                $this->current_call = Closure::bind(${$func}, $this, get_class($this));
+                call_user_func($this->current_call);
             } else {
-                $this->response($this->json(['error' => 'file_not_found']), 404);
+                $this->response($this->json(['error' => 'function_not_found_in_namespace']), 404);
             }
         } else {
-            $this->response($this->json(['error' => 'namespace_missing']), 400);
+            $this->response($this->json(['error' => 'file_not_found']), 404);
         }
     }
+
+
+    // public function processApi()
+    // {
+    //     $func = strtolower(trim($_REQUEST['request'] ?? ''));
+    //     $namespace = trim($_REQUEST['namespace'] ?? '', '/');
+    //     if ((int)method_exists($this, $func) > 0) {
+    //         $this->$func();
+    //     } else {
+    //         if (!empty($namespace)) {
+    //             $dir = dirname(__DIR__) . '/posts/' . $namespace;
+    //             $file = $dir . '/' . $func . '.php';
+
+    //             if (file_exists($file)) {
+    //                 include $file;
+
+    //                 // Auto-load function based on file name
+    //                 $func = basename($file, '.php');
+
+    //                 if (isset(${$func}) && is_callable(${$func})) {
+    //                     $this->current_call = Closure::bind(${$func}, $this, get_class($this));
+    //                     call_user_func($this->current_call);
+    //                 } else {
+    //                     $this->response($this->json(['error' => 'function_not_found_in_namespace']), 404);
+    //                 }
+    //             } else {
+    //                 $this->response($this->json(['error' => 'file_not_found']), 404);
+    //             }
+    //         } else {
+    //             $this->response($this->json(['error' => 'namespace_missing']), 404);
+    //         }
+    //     }
+    // }
+
+
+
+    // public function processApi()
+    // {
+    //     $func = strtolower(trim(str_replace("/", "", $_REQUEST['rquest'] ?? '')));
+
+    //     if ((int)method_exists($this, $func) > 0) {
+    //         $this->$func();
+    //     } else {
+    //         if (isset($_GET['namespace'])) {
+    //             $namespace = trim($_GET['namespace'], '/');
+    //             $dir = dirname(__DIR__) . '/posts/' . $namespace;
+    //             $file = $dir . '/' . $func . '.php';
+
+    //             if (file_exists($file)) {
+    //                 include $file;
+
+    //                 // Auto-load function based on filename
+    //                 $func = basename($file, '.php');
+
+    //                 if (isset(${$func}) && is_callable(${$func})) {
+    //                     $this->current_call = Closure::bind(${$func}, $this, get_class($this));
+    //                     call_user_func($this->current_call);
+    //                 } else {
+    //                     $this->response($this->json(['error' => 'function_not_found_in_namespace']), 404);
+    //                 }
+    //             } else {
+    //                 $this->response($this->json(['error' => 'file_not_found']), 404);
+    //             }
+    //         } else {
+    //             $this->response($this->json(['error' => 'namespace_missing']), 404);
+    //         }
+    //     }
+    // }
+
+
+
+
+
+
+
+
+
+    // public function processApi()
+    // {
+    //     $func = strtolower(trim(str_replace("/", "", $_REQUEST['rquest'] ?? '')));
+    //     if ((int)method_exists($this, $func) > 0) {
+    //         $this->$func();
+    //     } else {
+    //         if (isset($_GET['namespace'])) {
+    //             $namespace = trim($_GET['namespace'], '/');
+    //             $dir = dirname(__DIR__) . '/posts/' . $namespace;
+    //             $file = $dir . '/' . $func . '.php';
+    //             $func = basename($file, '.php');
+    //             if (file_exists($file)) {
+    //                 include $file; // includes the file, which defines $up
+
+    //                 if (isset(${$func}) && is_callable(${$func})) {
+    //                     // Example: ${'up'} means $up
+    //                     $this->current_call = Closure::bind(${$func}, $this, get_class($this));
+    //                     call_user_func($this->current_call);
+    //                 } else if (function_exists($func)) {
+    //                     $this->current_call = $func;
+    //                     call_user_func($this->current_call);
+    //                 } else {
+    //                     $this->response($this->json(['error' => 'function_not_found_in_namespace']), 404);
+    //                 }
+    //             } else {
+    //                 $this->response($this->json(['error' => 'file_not_found']), 404);
+    //             }
+    //         } else {
+    //             $this->response($this->json(['error' => 'method_not_found!!!']), 404);
+    //         }
+    //     }
+    // }
+
+
+    // public function processApi()
+    // {
+    //     $func = strtolower(trim($_REQUEST['rquest'] ?? ''));
+
+    //     if (method_exists($this, $func)) {
+    //         $this->$func();
+    //         return;
+    //     }
+
+    //     if (isset($_GET['namespace'])) {
+    //         $namespace = trim($_GET['namespace'], '/');
+    //         $dir = __DIR__ . '/libs/api/' . $namespace;
+    //         $file = $dir . '/' . $func . '.php';
+
+    //         if (file_exists($file)) {
+    //             include $file;
+
+    //             if (isset(${$func}) && is_callable(${$func})) {
+    //                 $this->current_call = Closure::bind(${$func}, $this, get_class($this));
+    //                 call_user_func($this->current_call);
+    //             } else {
+    //                 $this->response($this->json(['error' => 'function_not_found']), 500);
+    //             }
+    //         } else {
+    //             $this->response($this->json(['error' => 'file_not_found']), 404);
+    //         }
+    //     } else {
+    //         $this->response($this->json(['error' => 'namespace_missing']), 400);
+    //     }
+    // }
 
 
     // public function processApi()
