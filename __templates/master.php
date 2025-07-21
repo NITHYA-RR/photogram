@@ -39,8 +39,9 @@ Session::load_templates('head');
   <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
   <!-- <script src="/Js/app.min.js"></script> -->
   <!-- or -->
-  <script src="/Automation/js/templates/index.js"></script>
   <script src="/Automation/js/templates/plugins/dialog.js"></script>
+  <script src="/Automation/js/templates/index.js"></script>
+
 
 </body>
 

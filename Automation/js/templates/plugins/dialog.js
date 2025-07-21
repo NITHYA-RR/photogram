@@ -154,7 +154,8 @@ class Dialog {
 		$('#'+this.cloneId+' .modal-body').html(this.message);
 		$('#'+this.cloneId+' .modal-footer').html('');
 		if(this.buttons === "default"){
-			$('#'+this.cloneId+' .modal-footer').html(`<button type="button" class="btn btn-${theme}" ${this.framework.dismissattr}="modal">Okay</button>`);
+			let dismissAttr = (this.framework && this.framework.dismissattr) ? this.framework.dismissattr : 'data-bs-dismiss';
+			$('#'+this.cloneId+' .modal-footer').html(`<button type="button" class="btn btn-${theme}" ${dismissAttr}="modal">Okay</button>`);
 		} else {
 			this.renderButtons();
 		}

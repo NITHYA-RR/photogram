@@ -3,11 +3,29 @@ include_once __DIR__ . "/../../libs/includes/UserSession.class.php";
 include_once __DIR__ . "/../../libs/includes/User.class.php";
 
 session::ensurelogin();
-if (isset($_POST['post_text']) && isset($_FILES['post_image'])) {
-  $image_tmp = $_FILES['post_image']['tmp_name'];
-  $text = $_POST['post_text'];
-  Post::registerPost($text, $image_tmp);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $text = $_POST['post_text'] ?? '';
+  $image_tmp = $_FILES['post_image']['tmp_name'] ?? '';
+
+  if (!empty($_FILES['post_image']['name'])) {
+    try {
+      Post::registerPost($text, $image_tmp);
+      echo "<div class='alert alert-success'>✅ Post shared successfully!</div>";
+    } catch (Exception $e) {
+      echo "<div class='alert alert-danger'>" . $e->getMessage() . "</div>";
+    }
+  } else {
+    echo "<div class='alert alert-warning'>⚠️ No file selected!</div>";
+  }
 }
+
+// session::ensurelogin();
+// if (isset($_POST['post_text']) && isset($_FILES['post_image'])) {
+//   $image_tmp = $_FILES['post_image']['tmp_name'];
+//   $text = $_POST['post_text'];
+//   Post::registerPost($text, $image_tmp);
+// }
 ?>
 <section class="py-5 text-center container">
   <div class="row py-lg-5">

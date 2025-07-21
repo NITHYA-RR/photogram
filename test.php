@@ -1,14 +1,41 @@
-<pre>
-col-sm-6 col-lg-4 mb-4
- data-masonry='{"percentPosition": true}'
 <?php
+// require_once "Database.class.php";
+// require_once __DIR__ . '/../traits/SQLGetterSetterdata.trait.php'; // Include the trait
+// class hai
+// {
+//     public static function signup($user, $pass, $email, $phone)
+//     {
+
+//         $conn = Database::getConnection();
+//         $sql = "INSERT INTO `users` (`username`, `password`, `email`, `phone`, `blocked`, `active`)
+//      VALUES ('$user', '$pass', '$email', '$phone', '0','0');";
+//         echo $sql;
+//     }
+// }
+
+//phpinfo();
+
+// $mysqli = new mysqli("localhost", "root", "", "test");
+
+// if ($mysqli->connect_error) {
+//     die("Connection failed: " . $mysqli->connect_error);
+// }
+// echo "✅ mysqli is working!";
+
+// $mysqli = new mysqli("localhost", "root", "", "php");
+
+// if ($mysqli->connect_error) {
+//     die("Connection failed: " . $mysqli->connect_error);
+// }
+// echo "✅ mysqli is working. Connection successful!";
 
 
-if (function_exists('exif_imagetype')) {
-    echo "✅ EXIF is enabled.";
-} else {
-    echo "❌ EXIF is NOT enabled.";
-}
+
+
+
+// phpinfo();
+
+// echo "Hello, Nithya!";
 
 
 // include 'libs/load.php';

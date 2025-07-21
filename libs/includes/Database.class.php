@@ -1,35 +1,64 @@
 <?php
-class Database{
+
+class Database
+{
     public static $conn = null;
-    public static function getConnection(){
-        if (Database::$conn == null){
-            
+
+    public static function getConnection()
+    {
+        if (Database::$conn == null) {
             $servername = "localhost";
             $username = "root";
             $password = "";
             $dbname = "php";
-        
+
             // Create connection
             $conn = new mysqli($servername, $username, $password, $dbname);
-        
+
             // Check connection
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
-            } 
-            else{
-                // printf("connection will be created........");
+            } else {
                 Database::$conn = $conn;
-                return Database::$conn; // replaacing null with actual value
+                return Database::$conn;
+            }
+        } else {
+            return Database::$conn;
+        }
+    }
+}
+
+// class Database{
+//     public static $conn = null;
+//     public static function getConnection(){
+//         if (Database::$conn == null){
+            
+//             $servername = "localhost";
+//             $username = "root";
+//             $password = "";
+//             $dbname = "php";
+        
+//             // Create connection
+//             $conn = new mysqli($servername, $username, $password, $dbname);
+        
+//             // Check connection
+//             if ($conn->connect_error) {
+//                 die("Connection failed: " . $conn->connect_error);
+//             } 
+//             else{
+//                 // printf("connection will be created........");
+//                 Database::$conn = $conn;
+//                 return Database::$conn; // replaacing null with actual value
                
 
-            }
-        } else{
-            // printf("established the connection..");
-            return Database::$conn;
+//             }
+//         } else{
+//             // printf("established the connection..");
+//             return Database::$conn;
             
-        }
+//         }
  
-    }
+//     }
     
 
-}
+// }

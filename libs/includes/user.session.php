@@ -158,4 +158,8 @@ class UserSession
             throw new Exception("Email not found for user ID: " . $this->id);
         }
     }
+    public function getId()
+    {
+        return $this->uid; // Return the user ID from the session
+    }
 }

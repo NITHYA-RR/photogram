@@ -68,24 +68,38 @@ class session
     {
         return basename($_SERVER['SCRIPT_NAME'], '.php');
     }
+
     public static function isAuthenticated()
     {
-        if (is_object(Session::getUserSession())) {
-            $valid = Session::getUserSession()->isvalid();
-            error_log("User session valid: " . ($valid ? "yes" : "no"));
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start(); // ✅ must be here
+        }
+
+        $session = Session::getUserSession();
+
+        if (is_object($session)) {
+            $valid = $session->isvalid();
+            error_log("🔐 User session valid: " . ($valid ? "yes" : "no"));
             return $valid;
         }
-        error_log("No user session object found");
+
+        error_log("❌ No user session object found in \$_SESSION['user']");
+        error_log("🔍 SESSION DUMP: " . print_r($_SESSION, true));
         return false;
     }
+
+
+
     // public static function isAuthenticated()
     // {
     //     if (is_object(Session::getUserSession())) {
-    //         return Session::getUserSession()->isvalid();
+    //         $valid = Session::getUserSession()->isvalid();
+    //         error_log("User session valid: " . ($valid ? "yes" : "no"));
+    //         return $valid;
     //     }
-    //     return false; // Return false if no user session
+    //     error_log("No user session object found");
+    //     return false;
     // }
-
 
     public static function setUserSession($userSession)
     {
