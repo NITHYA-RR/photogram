@@ -6,7 +6,7 @@ var $grid = $('#masonry-area').masonry({
       $grid.masonry('layout');
     });
 
-        $.post('/libs/posts/count.php',function(data) {
+$.post('/libs/posts/count.php',function(data) {
     console.log(data);
     $('#post-total').html("Total posts: " + data.count);
 }).fail(function(error) {

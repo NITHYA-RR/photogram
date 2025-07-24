@@ -55,27 +55,29 @@ trait SQlGetterSetter
             return false;
         }
     }
-    public function getId()
-    {
-        return $this->id;
-    }
-
 
     public function delete()
     {
+
         if (!$this->conn) {
             $this->conn = Database::getConnection();
         }
 
-        $stmt = $this->conn->prepare("DELETE FROM `post` WHERE `id` = ?");
-        $stmt->bind_param("i", $this->id);
-        $stmt->execute();
+        try {
+            //TODO: Delete the image before deleting the post entry
 
-        if ($stmt->affected_rows > 0) {
+            $sql = "DELETE FROM `$this->table` WHERE `id`='$this->id';";
+            $this->conn->query($sql);
             return true;
-        } else {
+        } catch (Exception $e) {
+            // print $e->getMessage();
+            throw new Exception(__CLASS__ . "::delete, data unavailable.");
             return false;
         }
+    }
+    public function getID()
+    {
+        return $this->id;
     }
 
 
@@ -84,12 +86,19 @@ trait SQlGetterSetter
     //     if (!$this->conn) {
     //         $this->conn = Database::getConnection();
     //     }
-    //     $sql = "DELETE FROM `post` WHERE `id`= '32';";
-    //     $result = $this->conn->query($sql);
-    //     if ($result) {
-    //         return true;
-    //     } else {
+
+    //     $sql = "DELETE FROM `post` WHERE `id` = ?";
+    //     $stmt = $this->conn->prepare($sql);
+
+    //     if (!$stmt) {
+    //         error_log("❌ Prepare failed: " . $this->conn->error);
     //         return false;
     //     }
+
+    //     $stmt->bind_param("i", $this->id);  // Use the object's ID
+    //     $stmt->execute();
+
+    //     return $stmt->affected_rows > 0;
     // }
+
 }
