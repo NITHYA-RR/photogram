@@ -7,7 +7,10 @@ $posts = Post::getAllPosts();
     <div class="container">
         <div class="row" id="masonry-area">
             <?php foreach ($posts as $p):
-                $created_at = $p->getCreatedAt(); ?>
+                $created_at = $p->getCreatedAt();
+                $owner = new User($p->getOwner());
+
+            ?>
                 <div class="col-sm-6 col-lg-4 mb-4"
                     id="post-<?php echo $p->getId(); ?>">
                     <div class="card shadow-sm">
@@ -29,7 +32,7 @@ $posts = Post::getAllPosts();
                                     ?>
                                     <!-- <button type="button" class="btn btn-sm btn-outline-danger">Delete</button> -->
                                 </div>
-                                <small class="text-muted"><?php echo htmlspecialchars($created_at); ?></small>
+                                <small class="text-muted"><?php echo htmlspecialchars($created_at); ?> by <?php echo $owner->getUsername() ?></small>
                             </div>
                         </div>
                     </div>

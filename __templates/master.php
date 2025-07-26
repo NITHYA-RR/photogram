@@ -41,6 +41,7 @@ Session::load_templates('head');
   <!-- or -->
   <script src="/Automation/js/templates/plugins/dialog.js"></script>
   <script src="/Automation/js/templates/index.js"></script>
+  <script src="/Automation/js/toast.js"></script>
 
 
 </body>
