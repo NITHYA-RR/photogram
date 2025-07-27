@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/user.session.php';
 class session
 {
     public static function start()

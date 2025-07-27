@@ -1,6 +1,6 @@
 <?php
 
-
+require 'vendor/autoload.php';
 //implement automate if class files;
 include_once 'libs/includes/Session.class.php';
 include_once 'libs/includes/User.class.php';
