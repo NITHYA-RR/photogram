@@ -45,12 +45,9 @@
 
 <span style="font-size: 24px;"><b>Instalation Steps</b></span>
 
-<ol>
-<li>Clone the repository</li>
 <ul>
-   <li>
-```bash
-git clone https://github.com/yourusername/photogram.git</li>
+<li>Clone the repository</li>
+git clone https://github.com/yourusername/photogram.git
 </ul>
 
 <li>Move the project folder into the htdocs directory in XAMPP</li>
