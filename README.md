@@ -105,3 +105,8 @@ grunt
 <li>Run your project in the browser</li>
 http://localhost/photogram
 </ul>
+
+<span style="font-size: 24px;"><b>### 🙌 Final Note</b></span>
+Thanks for checking out **Photogram**!  
+This project was built to explore full-stack web development with real-time features.  
+Feel free to fork, modify, or contribute!.
