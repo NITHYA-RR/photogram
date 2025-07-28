@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <body>
         <main class="form-signin">
             <form method="post" action="login.php">
-                <img class="mb-4" src="/home/sathis/Downloads/phplogo" alt="" width="72" height="50">
+
                 <h1 class="h3 mb-3 fw-normal">LOGIN</h1>
 
                 <?php if (isset($_GET['error'])) { ?>

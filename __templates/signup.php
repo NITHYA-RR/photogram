@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <main class="form-signup">
     <form method="POST" action="signup.php">
-      <img class="mb-4" src="/home/sathis/Downloads/phplogo" alt="" width="72" height="50">
       <h1 class="h3 mb-3 fw-normal"><b>SIGNUP</b></h1>
 
       <div class="form-floating">
