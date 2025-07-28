@@ -13,3 +13,14 @@
     Photogram is a simple yet powerful social media web app designed for sharing photos.  
     Users can create an account, upload images with captions, like others' posts, and receive real-time notifications.The platform is built using PHP and MySQL with RabbitMQ for instant messaging and updates.It focuses on clean design, responsiveness, and a smooth user experience — ideal for learning full-stack development and real-time web concepts.
 </p>
+
+<span style="font-size: 24px;"><b>Key Features</b></span>
+
+<ul>
+<li>ser Authentication – Secure sign-up and login system</li>
+<li>Photo Upload – Share photos with custom captions</li>
+<li>Like System – Like and view other users' posts</li>  
+<li>Real-Time Updates – Instant notifications using RabbitMQ</li>  
+<li>Responsive Design – Mobile-first layout using Masonry.js</li>  
+<li>Optimized Performance – Assets compiled using Grunt</li>
+</ul>
