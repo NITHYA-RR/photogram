@@ -58,20 +58,32 @@ trait SQlGetterSetter
 
     public function delete()
     {
-
         if (!$this->conn) {
             $this->conn = Database::getConnection();
         }
 
         try {
-            //TODO: Delete the image before deleting the post entry
+            // First, get the image URL to delete the file
+            $image_url = $this->_get_data('image_url');
+            if ($image_url && file_exists($_SERVER['DOCUMENT_ROOT'] . $image_url)) {
+                unlink($_SERVER['DOCUMENT_ROOT'] . $image_url);
+            }
 
-            $sql = "DELETE FROM `$this->table` WHERE `id`='$this->id';";
-            $this->conn->query($sql);
-            return true;
+            // Delete from likes table first (foreign key constraint)
+            $sql_likes = "DELETE FROM `likes` WHERE `post_id` = '$this->id'";
+            $this->conn->query($sql_likes);
+
+            // Delete the post
+            $sql = "DELETE FROM `$this->table` WHERE `id` = '$this->id'";
+            $result = $this->conn->query($sql);
+
+            if ($result) {
+                return true;
+            } else {
+                throw new Exception("Failed to delete post: " . $this->conn->error);
+            }
         } catch (Exception $e) {
-            // print $e->getMessage();
-            throw new Exception(__CLASS__ . "::delete, data unavailable.");
+            error_log("Delete error: " . $e->getMessage());
             return false;
         }
     }
@@ -79,26 +91,4 @@ trait SQlGetterSetter
     {
         return $this->id;
     }
-
-
-    // public function delete()
-    // {
-    //     if (!$this->conn) {
-    //         $this->conn = Database::getConnection();
-    //     }
-
-    //     $sql = "DELETE FROM `post` WHERE `id` = ?";
-    //     $stmt = $this->conn->prepare($sql);
-
-    //     if (!$stmt) {
-    //         error_log("❌ Prepare failed: " . $this->conn->error);
-    //         return false;
-    //     }
-
-    //     $stmt->bind_param("i", $this->id);  // Use the object's ID
-    //     $stmt->execute();
-
-    //     return $stmt->affected_rows > 0;
-    // }
-
 }

@@ -43,10 +43,10 @@ class session
     //     return Session::$user;
 
     //  }
-    public static function load_templates($name)
+    public static function load_templates($name ,$data = [])
     {
         static $errorCalled = false; // Prevents infinite loop
-
+        extract($data);
         // Corrected path to the templates directory
         $script = $_SERVER['DOCUMENT_ROOT'] . "/__templates/$name.php";
         if (is_file($script)) {

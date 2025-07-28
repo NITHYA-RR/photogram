@@ -1,16 +1,33 @@
 <?php
+require_once __DIR__ . '/../includes/Session.class.php';
+require_once __DIR__ . '/../app/Post.class.php';
+require_once __DIR__ . '/../app/like.class.php';
 
 ${basename(__FILE__, '.php')} = function () {
-    if ($this->isAuthenticated() and $this->paramsExists('id')) {
-        $p = new Post($this->_request['id']);
-        $l = new Like($p);
-        $l->toggleLike();
-        $this->response($this->json([
-            'liked' => $l->isLiked()
-        ]), 200);
-    } else {
-        $this->response($this->json([
-            'message' => "bad request"
-        ]), 400);
+    session_start();
+
+    if (!Session::isAuthenticated()) {
+        echo json_encode(['message' => 'unauthorized']);
+        http_response_code(401);
+        exit;
     }
+
+    if (!isset($_POST['id'])) {
+        echo json_encode(['message' => 'bad request']);
+        http_response_code(400);
+        exit;
+    }
+
+    $postId = intval($_POST['id']);
+    $post = new Post($postId);
+    $like = new Like($post);
+    $like->toggleLike();
+
+    echo json_encode(['liked' => $like->isLiked()]);
+    http_response_code(200);
 };
+
+// Call the function if accessed directly
+if (basename($_SERVER['SCRIPT_FILENAME'], '.php') === basename(__FILE__, '.php')) {
+    (${basename(__FILE__, '.php')})();
+}

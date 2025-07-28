@@ -42,7 +42,7 @@ class User
             $row = $result->fetch_assoc();
             ///if($rows['password']==$password){ 
             if (password_verify($password, $row['password'])) {
-                return $row['username'];
+                return $row['id']; // Return user ID instead of username
             } else {
                 return false;
             }

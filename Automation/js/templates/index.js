@@ -1,8 +1,9 @@
 
 var $grid = $('#masonry-area').masonry({
   itemSelector: '.col-sm-6',
-      percentPosition: true
-    })
+  percentPosition: true,
+  columnWidth: '.col-sm-6'
+})
     $grid.imagesLoaded().progress(function() {
       $grid.masonry('layout');
     });
@@ -13,203 +14,226 @@ $.post('/libs/posts/count.php',function(data) {
 }).fail(function(error) {
     console.error('Error:', error);
 });
-$('.btn-like').on('click', function(){
-  post_id = $(this).parent().attr('data-id');
-  $this = $(this);
-  $(this).html() == "Like" ? $(this).html("Liked") : $(this).html("Like");
-  $(this).hasClass('btn-outline-primary') ? $(this).removeClass('btn-outline-primary').addClass('btn-primary') : $(this).removeClass('btn-primary').addClass('btn-outline-primary');
-  $.post('/api/posts/like', {
-      id: post_id
-  }, function(data, textSuccess, xhr){
-      if(textSuccess == "success"){
-          if(data.liked){
-              $($this).html("Liked");
-              $($this).removeClass('btn-outline-primary').addClass('btn-primary');
-          } else {
-              $($this).html("Like");
-              $($this).removeClass('btn-primary').addClass('btn-outline-primary');
-          }
-      }
-  });
+
+// Use event delegation for better handling of dynamically added elements
+$(document).on('click', '.btn-like', function(){
+    var post_id = $(this).parent().attr('data-id');
+    var $this = $(this);
+    $(this).html() == "Like" ? $(this).html("Liked") : $(this).html("Like");
+    $(this).hasClass('btn-outline-primary') ? $(this).removeClass('btn-outline-primary').addClass('btn-primary') : $(this).removeClass('btn-primary').addClass('btn-outline-primary');
+    $.post('/libs/posts/like.php', {
+        id: post_id
+    }, function(data, textSuccess, xhr){
+        // Try to parse JSON if needed
+        if (typeof data === "string") {
+            try { data = JSON.parse(data); } catch(e) {}
+        }
+        if(textSuccess == "success" && data && data.liked !== undefined){
+            if(data.liked){
+                $($this).html("Liked");
+                $($this).removeClass('btn-outline-primary').addClass('btn-primary');
+            } else {
+                $($this).html("Like");
+                $($this).removeClass('btn-primary').addClass('btn-outline-primary');
+            }
+        }
+    }).fail(function(xhr, status, error) {
+        console.error('Like request failed:', error);
+    });
 });
-$('.btn-delete').on('click', function(){
-  post_id = $(this).parent().attr('data-id');
-  d = new Dialog("Delete Post", "Are you sure want to remove this post");
-  d.setButtons([
-      {
-          'name': "Delete",
-          "class": "btn-danger",
-          "onClick": function(event){
-              console.log(`Assume this post ${post_id} is deleted`);
-              // $(`#post-${post_id}`).remove();
-              
-              $.post('/libs/posts/delete.php',
-              {
-                  id: post_id
-              }, function(data, textSuccess, xhr){
-                  console.log(textSuccess);
-                  console.log(data);
-                  if(textSuccess =="success" ){ //means 200
-                      $(`#post-${post_id}`).remove();
-                  }
-              });
-              $(event.data.modal).modal('hide')
-          }
-      },
-      {
-          'name': "Cancel",
-          "class": "btn-secondary",
-          "onClick": function(event){
-              $(event.data.modal).modal('hide');
-          }
-      }
-  ]);
-  d.show();
+
+$(document).on('click', '.btn-delete', function(){
+    var post_id = $(this).parent().attr('data-id');
+    var d = new Dialog("Delete Post", "Are you sure want to remove this post");
+    d.setButtons([
+        {
+            'name': "Delete",
+            "class": "btn-danger",
+            "onClick": function(event){
+                console.log(`Assume this post ${post_id} is deleted`);
+                
+                $.post('/libs/posts/delete.php',
+                {
+                    id: post_id
+                }, function(data, textSuccess, xhr){
+                    console.log(textSuccess);
+                    console.log(data);
+                    if(textSuccess =="success" ){ //means 200
+                        // Remove the element and update Masonry layout properly
+                        var $item = $(`#post-${post_id}`);
+                        $item.remove();
+                        $grid.masonry('reloadItems');
+                        $grid.masonry('layout');
+                        updatePostCount();
+                    }
+                });
+                $(event.data.modal).modal('hide')
+            }
+        },
+        {
+            'name': "Cancel",
+            "class": "btn-secondary",
+            "onClick": function(event){
+                $(event.data.modal).modal('hide');
+            }
+        }
+    ]);
+    d.show();
 });
-// $('.btn-delete').on('click', function(){
-//   post_id = $(this).parent().attr('data-id');
-//   d = new Dialog("Delete Post", "Are you sure want to remove this post");
-//   d.setButtons([
-//       {
-//           'name': "Delete",
-//           "class": "btn-danger",
-//           "onClick": function(event){
-//               console.log(`Assume this post ${post_id} is deleted`);
-//               // $(`#post-${post_id}`).remove();
-              
-//               $.post('/api/posts/delete',
-//               {
-//                   id: post_id
-//               }, function(data, textSuccess, xhr){
-//                   console.log(textSuccess);
-//                   console.log(data);
-//                   if(textSuccess =="success" ){ //means 200
-//                       $(`#post-${post_id}`).remove();
-//                   }
-//               });
-//               $(event.data.modal).modal('hide')
-//           }
-//       },
-//       {
-//           'name': "Cancel",
-//           "class": "btn-secondary",
-//           "onClick": function(event){
-//               $(event.data.modal).modal('hide');
-//           }
-//       }
-//   ]);
-//   d.show();
-// });
 
+// Handle post form submission via AJAX
+console.log('Setting up form submit handler...');
+console.log('Form element found:', $('#post-form').length);
 
-// $(document).on('click', '.btn-delete', function () {
-//   let postId = $(this).parent().attr('data-id'); // OR: $(this).attr('data-id')
-  
-//   let content = "Are you sure you want to delete this post?";
-//   let bt_name = "Delete";
+if ($('#post-form').length === 0) {
+    console.error('Post form not found!');
+} else {
+    console.log('Post form found, attaching submit handler...');
+}
 
-//   let d = new Dialog(content, "Delete Post");
-//   d.setButtons([
-//     {
-//       name: "Cancel",
-//       class: 'btn-secondary',
-//       onClick: function(event){
-//         $(event.data.modal).modal('hide');
-//       }
-//     },
-//     {
-//       name: bt_name,
-//       class: 'btn-danger btn-loading',
-      
-//       onClick: function(event){
-//         console.log("Post deleted:", postId);
-//         $.post('/libs/posts/delete.php',
-//           {
-//             id : postId
-//           }, function(data) {
-//             // Try to parse JSON if needed
-//             if (typeof data === "string") {
-//               try { data = JSON.parse(data); } catch(e) {}
-//             }
-//             if (data && data.message === "success") {
-//               $('#post-' + postId).remove();
-//               // $grid.masonry('layout');
-//               // let count = parseInt($('#post-total').text().replace("Total posts: ", ""));
-//               // $('#post-total').html("Total posts: " + (count - 1));
-//             } else {
-//               alert("Delete failed: " + (data && data.message ? data.message : "Unknown error"));
-//             }
-//           }
-//         ).fail(function(xhr, status, error) {
-//           alert("Delete request failed: " + error);
-//         });
+$('#post-form').on('submit', function(e) {
+    e.preventDefault();
+    console.log('Form submitted!');
+    console.log('Form data:', $(this).serialize());
+    
+    var formData = new FormData(this);
+    console.log('FormData created:', formData);
+    
+    // Test if we can access form fields
+    console.log('Post text value:', $('#post_text').val());
+    console.log('File input:', $('#inputGroupFile02')[0].files[0]);
+    
+    // Check if form has required data
+    var postText = formData.get('post_text');
+    var postImage = formData.get('post_image');
+    console.log('Post text:', postText);
+    console.log('Post image:', postImage);
+    
+    if (!postText || !postImage) {
+        showToast('Please fill in both text and image fields.', 'error');
+        return;
+    }
+    
+    var $submitBtn = $('#share-btn');
+    var originalText = $submitBtn.text();
+    
+    // Disable submit button and show loading state
+    $submitBtn.prop('disabled', true).text('Sharing...');
+    
+    console.log('Sending AJAX request to:', '/libs/posts/add.php');
+    $.ajax({
+        url: '/libs/posts/add.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            console.log('Success response:', response);
+            
+            // Check if response is a string and try to parse it
+            if (typeof response === 'string') {
+                try {
+                    response = JSON.parse(response);
+                } catch(e) {
+                    console.error('Failed to parse response:', e);
+                }
+            }
+            
+            if (response && response.success && response.post) {
+                console.log('Post created successfully:', response.post);
+                // Create new post HTML
+                var $newElem = $(createPostHtml(response.post));
+                
+                // Add to the beginning of the grid
+                $('#masonry-area').prepend($newElem);
+                
+                // Wait for images to load, then update Masonry
+                $newElem.imagesLoaded(function() {
+                    $grid.masonry('reloadItems');
+                    $grid.masonry('layout');
+                });
+                
+                // Clear the form
+                $('#post-form')[0].reset();
+                // Show success message
+                showToast('Post shared successfully!', 'success');
+                // Update post count
+                updatePostCount();
+            } else {
+                console.log('Response indicates failure:', response);
+                showToast('Failed to share post. Please try again.', 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            console.error('Response:', xhr.responseText);
+            
+            var errorMessage = 'Failed to share post. Please try again.';
+            if (xhr.responseText) {
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.message) {
+                        errorMessage = response.message;
+                    }
+                } catch(e) {
+                    // If not JSON, use the raw response
+                    errorMessage = xhr.responseText;
+                }
+            }
+            
+            showToast(errorMessage, 'error');
+        },
+        complete: function() {
+            // Re-enable submit button
+            $submitBtn.prop('disabled', false).text(originalText);
+        }
+    });
+});
 
-//         $(event.data.modal).modal('hide');
-//       }
-//     }
-//   ]);
-//   d.show("danger");
-// });
-// // init Masonry
-// var $grid = $('#masonry-area').masonry({
-//   // itemSelector: '.col',
-//   // columnWidth: '.col',
-//   percentPosition: true
-// });
-// // layout Masonry after each image loads
-// $grid.imagesLoaded().progress( function() {
-//   $grid.masonry('layout');
-// });
-// //
-// $.post('/api/posts/count', {
-//   id: 10
-// }, function(data) {
-//   console.log(data);
-//   $('#total-posts').html("Total posts: " + data.count);
-// });
-// // Function to set a cookie
-// function setCookie(name, value, daysToExpire) {
-// var expires = "";
+// Test button click handler
+$('#share-btn').on('click', function() {
+    console.log('Share button clicked!');
+});
 
-// if (daysToExpire) {
-//   var date = new Date();
-//   date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
-//   expires = "; expires=" + date.toUTCString();
-// }
-// document.cookie = name + "=" + value + expires + "; path=/";
-// }
+// Function to create post HTML
+function createPostHtml(post) {
+    return `
+        <div class="col-sm-6 col-lg-4 mb-4" id="post-${post.id}">
+            <div class="card shadow-sm">
+                <img src="${post.image_url}" class="bd-placeholder-img card-img-top" width="100%">
+                <div class="card-body">
+                    <p class="card-text">${post.post_text}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group" data-id="${post.id}">
+                            <button type="button" class="btn btn-sm btn-outline-primary btn-like">Like</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-delete">Delete</button>
+                        </div>
+                        <small class="text-muted">${post.created_at} by You</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
-// $('.btn-delete').on('click', function(){
-//   post_id = $(this).parent().attr('data-id');
-//   d = new Dialog("Delete Post", "Are you sure want to remove this post");
-//   d.setButtons([
-//       {
-//           'name': "Delete",
-//           "class": "btn-danger",
-//           "onClick": function(event){
-//               console.log(`Assume this post ${post_id} is deleted`);
-//               // $(`#post-${post_id}`).remove();
-              
-//               $.post('/api/posts/delete',
-//               {
-//                   id: post_id
-//               }, function(data, textSuccess, xhr){
-//                   console.log(textSuccess);
-//                   console.log(data);
-//                   if(textSuccess =="success" ){ //means 200
-//                       $(`#post-${post_id}`).remove();
-//                   }
-//               });
-//               $(event.data.modal).modal('hide')
-//           }
-//       },
-//       {
-//           'name': "Cancel",
-//           "class": "btn-secondary",
-//           "onClick": function(event){
-//               $(event.data.modal).modal('hide');
-//           }
-//       }
-//   ]);
-//   d.show();
-// });
+// Function to update post count
+function updatePostCount() {
+    $.post('/libs/posts/count.php', function(data) {
+        $('#post-total').html("Total posts: " + data.count);
+    }).fail(function(error) {
+        console.error('Error:', error);
+    });
+}
+
+// Function to show toast messages
+function showToast(message, type) {
+    // You can implement this with your existing toast system
+    console.log(type + ': ' + message);
+    // If you have a toast system, use it here
+    // showToastMessage(message, type);
+}
+
+// Attach event handlers to existing posts when page loads
+$(document).ready(function() {
+    attachEventHandlers($('#masonry-area'));
+});

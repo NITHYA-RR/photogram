@@ -38,7 +38,7 @@ class UserSession
             Session::set('session_token', $token); // Store token in session             
             return $token;
         } else {
-            echo "SQL Error: " . $conn->error;
+            error_log("SQL Error in authenticate: " . $conn->error);
             return false;
         }
     }

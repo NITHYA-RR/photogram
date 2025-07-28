@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../libs/app/like.class.php';
 $posts = Post::getAllPosts();
 ?>
 
@@ -19,7 +20,14 @@ $posts = Post::getAllPosts();
                             <p class="card-text"><?php echo htmlspecialchars($p->getPostText()); ?></p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group" data-id="<?php echo $p->getId(); ?>">
-                                    <button type="button" class="btn btn-sm btn-outline-primary btn-like">Like</button>
+                                    <?php
+                                    // Check if current user has liked this post
+                                    $like = new Like($p);
+                                    $isLiked = $like->isLiked();
+                                    $buttonClass = $isLiked ? 'btn-primary' : 'btn-outline-primary';
+                                    $buttonText = $isLiked ? 'Liked' : 'Like';
+                                    ?>
+                                    <button type="button" class="btn btn-sm <?php echo $buttonClass; ?> btn-like"><?php echo $buttonText; ?></button>
                                     <!-- <button type="button" class="btn btn-sm btn-outline-success">Share</button> -->
                                     <?php
                                     if (Session::isAuthenticated()):

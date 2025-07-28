@@ -16,19 +16,32 @@ class Post
         if (is_file($image_tmp) and getimagesize($image_tmp) !== false) {
             $author = Session::getUser()->getID();
             $image_name = md5($author . time()) . image_type_to_extension(exif_imagetype($image_tmp));
-            // $upload_dir = get_config('upload_path');
-            // $image_path = $upload_dir . $image_name;
-            $image_path = get_config('upload_path') . $image_name;
+
+            // Use absolute path for upload directory
             $upload_dir = __DIR__ . "/../../uploads/";
 
             // Create the folder if not exists
             if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0777, true);
+                if (!mkdir($upload_dir, 0777, true)) {
+                    throw new Exception("Failed to create upload directory");
+                }
+            }
+
+            // Ensure directory is writable
+            if (!is_writable($upload_dir)) {
+                chmod($upload_dir, 0777);
             }
 
             $image_path = $upload_dir . $image_name;
+
             if (move_uploaded_file($image_tmp, $image_path)) {
+                // Use the correct path relative to web root
                 $image_url = "/uploads/$image_name";
+
+                // Debug: Log the image path
+                error_log("Image saved to: $image_path");
+                error_log("Image URL: $image_url");
+
                 $insert_command = "INSERT INTO `post` (`post_text`,`multiple_images`,`image_url`, `like_count`, `owner`, `created_at`)
                 VALUES ('$text', 0, '$image_url', 0, '$author', now())";
                 $db = Database::getConnection();
@@ -36,11 +49,13 @@ class Post
                     $id = mysqli_insert_id($db);
                     return new Post($id);
                 } else {
-                    return false;
+                    throw new Exception("Database error: " . $db->error);
                 }
+            } else {
+                throw new Exception("Failed to move uploaded file to: $image_path");
             }
         } else {
-            throw new Exception("Image not Registered.");
+            throw new Exception("Invalid image file");
         }
     }
 
