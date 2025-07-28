@@ -50,33 +50,59 @@
 git clone https://github.com/yourusername/photogram.git
 </ul>
 
-<li>Move the project folder into the htdocs directory in XAMPP</li>
-
-<li>Import the SQL file into your MySQL database</li>
-
-<li>Update the database credentials in</li> 
 <ul>
-   <li>libs/includes/Database.class.php</li>
+<li>Move the project folder into the htdocs directory</li>
+C:\xampp\htdocs\photogram
 </ul>
 
-<li>Install PHP dependencies</li>
 <ul>
-   <li>composer install</li>
+<li>Import the database</li>
+# Open phpMyAdmin → create a new database → import photogram.sql
 </ul>
 
- <li>Install Node.js dependencies</li>
- <ul>
-   <li>npm install</li>
+<ul>
+<li>Update database credentials in</li>
+libs/includes/Database.class.php
 </ul>
 
-<li>Build frontend assets</li> 
- <ul>
-   <li> grunt</li>
+<ul>
+<li>Install PHP dependencies using Composer</li>
+composer install
 </ul>
 
-<li>Start Apache and MySQL from the XAMPP Control Panel</li>
-
-<li>Open the application in your browser</li>  
- <ul>
-   <li>http://localhost/photogram</li>
+<ul>
+<li>Install Node.js dependencies</li>
+npm install
+# or if you're cool and use pnpm
+pnpm install
 </ul>
+
+<ul>
+<li>nstall and configure RabbitMQ</li>
+# Download from: https://www.rabbitmq.com/download.html
+# After installing:
+# - Enable the management plugin
+rabbitmq-plugins enable rabbitmq_management
+
+# - Access the dashboard at:
+
+http://localhost:15672 (default username: guest, password: guest)
+
+# - Create a virtual host and user (if needed)
+
+</ul>
+
+<ul>
+<li>Start Apache and MySQL from XAMPP Control Panel</li>
+</ul>
+
+<ul>
+<li>Build frontend assets</li>
+grunt
+</ul>
+
+<ul>
+<li>Run your project in the browser</li>
+http://localhost/photogram
+</ul>
+
