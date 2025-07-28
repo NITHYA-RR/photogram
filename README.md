@@ -48,8 +48,11 @@
 <ol>
 <li>Clone the repository</li>
 <ul>
-   <li>git clone https://github.com/yourusername/photogram.git</li>
+   <li>
+```bash
+git clone https://github.com/yourusername/photogram.git</li>
 </ul>
+
 <li>Move the project folder into the htdocs directory in XAMPP</li>
 
 <li>Import the SQL file into your MySQL database</li>
@@ -58,18 +61,22 @@
 <ul>
    <li>libs/includes/Database.class.php</li>
 </ul>
+
 <li>Install PHP dependencies</li>
 <ul>
    <li>composer install</li>
-</ul> 
+</ul>
+
  <li>Install Node.js dependencies</li>
  <ul>
    <li>npm install</li>
 </ul>
+
 <li>Build frontend assets</li> 
  <ul>
    <li> grunt</li>
 </ul>
+
 <li>Start Apache and MySQL from the XAMPP Control Panel</li>
 
 <li>Open the application in your browser</li>  
