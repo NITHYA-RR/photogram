@@ -84,11 +84,11 @@ pnpm install
 # - Enable the management plugin
 rabbitmq-plugins enable rabbitmq_management
 
-# - Access the dashboard at:
+<p># - Access the dashboard at:</p>
 
 http://localhost:15672 (default username: guest, password: guest)
 
-# - Create a virtual host and user (if needed)
+<p># - Create a virtual host and user (if needed)</p>
 
 </ul>
 
@@ -105,4 +105,3 @@ grunt
 <li>Run your project in the browser</li>
 http://localhost/photogram
 </ul>
-
