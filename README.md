@@ -9,4 +9,4 @@
 
 </details>
 <span style="font-size: 24px;"><b>Project Preview</b></span>
-<img src="./photogram_collage_styled.png" alt="Photogram Preview" width="100%">
+<img src="/photogram_collage_styled.png" alt="Photogram Preview" width="100%">
