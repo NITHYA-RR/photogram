@@ -3,6 +3,7 @@
 trait SQlGetterSetter
 {
 
+    
 
     public function __call($name, $arguments)
     {

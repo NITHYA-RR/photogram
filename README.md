@@ -5,7 +5,7 @@
 
 <span style="font-size: 24px;"><b>Project Preview</b></span>
 
-<img src="photogram_preview_collage.png" alt="Photogram Preview" width="100%">
+<img src="photogram_preview_collage.jpg" alt="Photogram Preview" width="100%">
 
 <span style="font-size: 24px;"><b>About the Project🎓</b></span>
 
