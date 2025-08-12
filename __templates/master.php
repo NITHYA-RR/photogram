@@ -14,7 +14,7 @@ Session::load_templates('head');
     ?>
   </main>
   <?php
-  Session::load_templates('footer');
+  // Session::load_templates('footer');
   ?>
 
   <div id="modalsGarbage">

@@ -5,7 +5,7 @@
 
 <span style="font-size: 24px;"><b>Project Preview</b></span>
 
-<img src="photogram_preview_collage.jpg" alt="Photogram Preview" width="100%">
+<img src="photogram_collage.jpg" alt="Photogram Preview" width="100%">
 
 <span style="font-size: 24px;"><b>About the Project🎓</b></span>
 
@@ -47,7 +47,7 @@
 
 <ul>
 <li>Clone the repository</li>
-git clone https://github.com/yourusername/photogram.git
+git clone https://github.com/NITHYA-RR/photogram
 </ul>
 
 <ul>

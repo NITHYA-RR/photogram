@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <main class="form-signin">
             <form method="post" action="login.php">
 
-                <h1 class="h3 mb-3 fw-normal">LOGIN</h1>
+                <h1 class="h3 mb-3 fw-normal"><b>LOGIN</b></h1>
 
                 <?php if (isset($_GET['error'])) { ?>
 
